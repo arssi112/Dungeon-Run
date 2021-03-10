@@ -18,9 +18,9 @@ public class Grounded : MonoBehaviour
 
     }
 
-    private void OnCollisionEnter2D(Collision2D col)
+    private void OnCollisionEnter2D(Collision2D Collider)
     {
-        if (collider.collider.tag == "Ground")
+        if (GetComponent<Collider>().GetComponent<Collider>().tag == "Ground")
         {
             Player.GetComponent<Movement>().isGrounded = true;
         }

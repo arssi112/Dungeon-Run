@@ -5,7 +5,7 @@ using UnityEngine;
 public class Movement : MonoBehaviour
 {
     public float MoveSpeed = 5f;
-    bool isGrounded = false;
+   public bool isGrounded = false;
 
     // Start is called before the first frame update
     void Start()
