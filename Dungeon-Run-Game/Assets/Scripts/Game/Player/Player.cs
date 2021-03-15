@@ -23,6 +23,11 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
+        if (!CanMove())
+        {
+            return;
+        }
+
         horizontalValue = Input.GetAxisRaw("Horizontal");
 
         if (Input.GetButtonDown("Jump"))
@@ -41,6 +46,16 @@ public class Player : MonoBehaviour
         Move(horizontalValue, jump);
     }
 
+    bool CanMove()
+    {
+        bool can = true;
+        if (FindObjectOfType<InteractionSystem>().isExamining)
+        {
+            can = false;
+            
+        }
+        return can;
+    }
     void GroundCheck()
     {
         isGrounded = false;
