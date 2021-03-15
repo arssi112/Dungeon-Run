@@ -4,87 +4,88 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    [SerializeField]public float Speed = 1;
+    [SerializeField] public float jumpPower = 500;
+    Rigidbody2D rb;
+    float horizontalValue;
 
-    public Vector2 velocity;
-    public LayerMask wallMask;
+    const float groundCheckRadius = 0.2f;
+    [SerializeField] LayerMask groundLayer;
+    [SerializeField] Transform groundCheckCollider;
+    [SerializeField] bool isGrounded;
+    bool facingRight = true;
+    bool jump;
 
-    private bool walk, walk_left, walk_right, jump;
-
-
-    // Start is called before the first frame update
-    void Start()
+    private void Awake()
     {
-
+        rb = GetComponent<Rigidbody2D>();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        CheckPlayerInput();
-        UpdatePlayerPosition();
-    }
+        horizontalValue = Input.GetAxisRaw("Horizontal");
 
-    void UpdatePlayerPosition()
-    {
-        Vector3 pos = transform.localPosition;
-        Vector3 scale = transform.localScale;
-
-        if (walk)
+        if (Input.GetButtonDown("Jump"))
         {
-            if (walk_left)
-            {
-                pos.x -= velocity.x * Time.deltaTime;
-                scale.x = -1;
+            jump = true;
+        }
+        else if (Input.GetButtonUp("Jump"))
+        {
+            jump = false;
+        }
+        
+    }
+    private void FixedUpdate()
+    {
+        GroundCheck();
+        Move(horizontalValue, jump);
+    }
 
-            }
+    void GroundCheck()
+    {
+        isGrounded = false;
 
-            if (walk_right)
-            {
-                pos.x += velocity.x * Time.deltaTime;
-                scale.x = 1;
-            }
+        //check if Player collide with ground
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(groundCheckCollider.position, groundCheckRadius, groundLayer);
+        if (colliders.Length > 0)
+        {
+            isGrounded = true;
+        }
+    }
 
-            pos = ChechkWallRays(pos, scale.x);
+    void Move(float dir, bool jumpFlag)
+    {
+
+        //JUMPING
+        if (isGrounded && jumpFlag)
+        {
+            isGrounded = false;
+            jumpFlag = false;
+            //add Jump Force
+            rb.AddForce(new Vector2(0f, jumpPower));
         }
 
-        transform.localPosition = pos;
-        transform.localScale = scale;
-    }
+        //set value of x using dir and speed
+        float xVal = dir * Speed * 100 * Time.fixedDeltaTime;
+        //Creating the Vector2 for the velocity
+        Vector2 targetVelocity = new Vector2(xVal, rb.velocity.y);
+        //Set the player's velocity
+        rb.velocity = targetVelocity;
 
-    void CheckPlayerInput()
-    {
-        bool input_left = Input.GetKey(KeyCode.A);
-        bool input_right = Input.GetKey(KeyCode.D);
-        bool input_space = Input.GetKeyDown(KeyCode.Space);
-
-        walk = input_left || input_right;
-
-        walk_left = input_left && !input_right;
-
-        walk_right = !input_left && input_right;
-
-        jump = input_space;
-
-    }
-
-    //collision checker
-    Vector3 ChechkWallRays(Vector3 pos, float direction)
-    {
-        //gives ray position pos.x + direction equals where the player pos is.
-        //pos.y takes the center pos and adds 1 pos from the top to avoid invalid collisions.
-        Vector2 originTop = new Vector2(pos.x + direction * .4f, pos.y + 1f - 0.2f);
-        Vector2 originMiddle = new Vector2(pos.x + direction * .4f, pos.y);
-        Vector2 originBottom = new Vector2(pos.x + direction * .4f, pos.y -1f + 0.2f);
-
-        RaycastHit2D wallTop = Physics2D.Raycast(originTop, new Vector2(direction, 0), velocity.x * Time.deltaTime, wallMask);
-        RaycastHit2D wallMiddle = Physics2D.Raycast(originMiddle, new Vector2(direction, 0), velocity.x * Time.deltaTime, wallMask);
-        RaycastHit2D wallBottom = Physics2D.Raycast(originBottom, new Vector2(direction, 0), velocity.x * Time.deltaTime, wallMask);
-
-        if (wallTop.collider != null || wallMiddle.collider != null || wallBottom.collider != null)
+        //Player Look direction
+        //if look right and move left, flip the player spirit
+        if (facingRight && dir < 0)
         {
-            pos.x -= velocity.x * Time.deltaTime * direction;
+            transform.localScale = new Vector3(-1, 1, 1);
+            facingRight = false;
+        }
+        //if look levt and move right, flip the player spirit
+        else if (!facingRight && dir > 0)
+        {
+            transform.localScale = new Vector3(1, 1, 1);
+            facingRight = true;
         }
 
-        return pos;
     }
+
 }
