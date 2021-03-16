@@ -1,16 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(BoxCollider2D))]
 public class Item : MonoBehaviour
 {
     public enum InteractionType{ NONE, PickUp, Examine }
-    public InteractionType type;
-
+    public enum ItemType { staic, consumables}
+    [Header("Attributes")]
+    public InteractionType interactType;
+    public ItemType type;
     [Header("Examine")]
     public string descriptionText;
-
+    [Header("Custom Events")]
+    public UnityEvent customEvent;
+    public UnityEvent consumeEvent;
 
     private void Reset()
     {
@@ -20,7 +25,7 @@ public class Item : MonoBehaviour
 
     public void Interact()
     {
-        switch (type)
+        switch (interactType)
         {
             //Add object to the PickedUpItems List
             case InteractionType.PickUp:
@@ -40,5 +45,9 @@ public class Item : MonoBehaviour
                 Debug.Log("NULL ITEM");
                 break;
         }
+
+        //Invoke the custom Events
+        customEvent.Invoke();
     }
+
 }
