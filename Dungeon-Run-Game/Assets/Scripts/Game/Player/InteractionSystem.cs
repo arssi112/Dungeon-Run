@@ -65,6 +65,8 @@ public class InteractionSystem : MonoBehaviour
         pickedItems.Add(item);
     }
 
+
+
     public void ExamineItem(Item item)
     {
         if (isExamining)

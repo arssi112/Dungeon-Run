@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
@@ -17,9 +18,14 @@ public class Player : MonoBehaviour
     bool jump;
     bool isDead = false;
 
+    [SerializeField]
+    private Text CoinCounter;
+    private int CoinAmount;
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        CoinAmount = 0;
     }
 
     private void Update()
@@ -39,7 +45,17 @@ public class Player : MonoBehaviour
         {
             jump = false;
         }
+
+        CoinCounter.text = "Coins:" + CoinAmount;
         
+    }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.GetComponent<Coin>())
+        {
+            CoinAmount += 1;
+            Destroy(collision.gameObject);
+        }
     }
     private void FixedUpdate()
     {

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(BoxCollider2D))]
 public class Item : MonoBehaviour
@@ -10,7 +11,6 @@ public class Item : MonoBehaviour
 
     [Header("Examine")]
     public string descriptionText;
-
 
     private void Reset()
     {
