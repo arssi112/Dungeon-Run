@@ -110,7 +110,8 @@ public class Player : MonoBehaviour
 
     public void Die()
     {
-        isDead = true;    
+        isDead = true;
+        Time.timeScale = 0;
     }
 
 }
