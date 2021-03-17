@@ -15,6 +15,7 @@ public class Player : MonoBehaviour
     [SerializeField] bool isGrounded;
     bool facingRight = true;
     bool jump;
+    bool isDead = false;
 
     private void Awake()
     {
@@ -53,6 +54,10 @@ public class Player : MonoBehaviour
         {
             can = false;
             
+        }
+        if (isDead)
+        {
+            can = false;
         }
         return can;
     }
@@ -101,6 +106,11 @@ public class Player : MonoBehaviour
             facingRight = true;
         }
 
+    }
+
+    public void Die()
+    {
+        isDead = true;    
     }
 
 }
