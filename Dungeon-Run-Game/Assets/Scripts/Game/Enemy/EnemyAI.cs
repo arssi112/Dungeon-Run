@@ -7,10 +7,10 @@ public class EnemyAI : MonoBehaviour
     //Reference to waypoints
     public List<Transform> points;
     //int value for the next point index
-    public int nextID;
+    public int nextID = 0;
     //value of that applies to ID for changing
     int IdChangeValue = 1;
-
+    public float speed = 4;
 
     private void Reset()
     {
@@ -43,5 +43,43 @@ public class EnemyAI : MonoBehaviour
         points = new List<Transform>();
         points.Add(p1.transform);
         points.Add(p2.transform);
+    }
+
+    private void Update()
+    {
+        MoveToNextPoint();
+    }
+
+    void MoveToNextPoint()
+    {
+        //Get the next Point transform
+        Transform goalPoint = points[nextID];
+        //flip enemy axis
+        if (goalPoint.transform.position.x > transform.position.x)
+        {
+            transform.localScale = new Vector3(-1, 1, 1);
+        }
+        else
+        {
+            transform.localScale = new Vector3(1, 1, 1);
+        }
+        //Move the enemy towards the goal point
+        transform.position = Vector2.MoveTowards(transform.position, goalPoint.position, speed * Time.deltaTime);
+        //check the distance between enemy and goal point for trigger to next point
+        if (Vector2.Distance(transform.position, goalPoint.position) < 1f)
+        {
+            //Check if we are at the end of the line(make the change -1)
+            if (nextID ==points.Count -1)
+            {
+                IdChangeValue = -1;
+            }
+            //Check if we are at the start of the line(make the change +1) 
+            if (nextID == 0)
+            {
+                IdChangeValue = 1;
+            }
+            //apply the changes on the nextID
+            nextID += IdChangeValue;
+        }
     }
 }
