@@ -24,6 +24,7 @@ public class Player : MonoBehaviour
 
     private void Awake()
     {
+        Time.timeScale = 1;
         rb = GetComponent<Rigidbody2D>();
         CoinAmount = 0;
     }
