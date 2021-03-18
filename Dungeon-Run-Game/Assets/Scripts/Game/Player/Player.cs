@@ -22,8 +22,12 @@ public class Player : MonoBehaviour
     private Text CoinCounter;
     private int CoinAmount;
 
+    public GameObject WinPanel;
+    public GameObject Diamond;
+
     private void Awake()
     {
+        WinPanel.SetActive(false);
         Time.timeScale = 1;
         rb = GetComponent<Rigidbody2D>();
         CoinAmount = 0;
@@ -56,6 +60,13 @@ public class Player : MonoBehaviour
         {
             CoinAmount += 1;
             Destroy(collision.gameObject);
+        }
+
+        if (collision.gameObject.name == "Diamond")
+        {
+            WinPanel.SetActive(true);
+            Debug.Log("Do something here");
+            Time.timeScale = 0;
         }
     }
     private void FixedUpdate()
