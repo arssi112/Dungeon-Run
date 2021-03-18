@@ -65,7 +65,7 @@ public class Player : MonoBehaviour
         if (collision.gameObject.name == "Diamond")
         {
             WinPanel.SetActive(true);
-            Debug.Log("Do something here");
+            Debug.Log("Collected the Diamond");
             Time.timeScale = 0;
         }
     }
